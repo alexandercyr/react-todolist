@@ -8,9 +8,8 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 
 import TabBar from '../components/tabBar';
 import TextEntry from '../components/textEntry';
-import Table from '../components/table';
+import Row from '../components/row';
 
-import { API_HOST } from '../utils/constants';
 
 const cors = require('cors')({ origin: true });//eslint-disable-line
 
@@ -22,7 +21,7 @@ class Index extends Component {
     this.state = {
       activeTabIndex: 0,
       textfield: '',
-      todos: []
+      todos: {}
     };
   }
 
@@ -38,12 +37,51 @@ class Index extends Component {
        if (res.ok) {
          return res.json();
        }
-       throw new Error('Could not fetch cancellation reasons.');
+       throw new Error('Could not fetch todos.');
      })
      .then((data) => {
-       console.log(data);
+       this.setState({ todos: data === null ? {} : data });
      })
      .catch(error => console.log(error));
+  }
+
+  setupTodoRows = () => {
+    const { todos } = this.state;
+    console.log(todos);
+    const todoArr = Object.keys(todos).map((id) => {
+      const todo = todos[id];
+      return {
+        id,
+        text: todo.text,
+        completed: todo.completed
+      };
+    });
+
+    let filteredTodos;
+
+    switch (this.state.activeTabIndex) {
+      case 0:
+        filteredTodos = todoArr;
+        break;
+      case 1:
+        filteredTodos = todoArr.filter(todo => todo.completed === false);
+        break;
+      case 2:
+        filteredTodos = todoArr.filter(todo => todo.completed === true);
+        break;
+      default:
+        return '';
+    }
+
+    return filteredTodos.map(todo => (
+      <Row
+        id={todo.id}
+        title={todo.text}
+        completed={todo.completed}
+        handleChecked={this.handleUpdateTodoChecked}
+        handleDeleted={this.handleDeleteTodo}
+      />
+    ));
   }
 
   handleTabChange = (event, value) => {
@@ -56,7 +94,6 @@ class Index extends Component {
     });
   }
 
-
   handleCreateNewTodo = () => {
     const newTodo = {
       text: this.state.textfield,
@@ -67,13 +104,11 @@ class Index extends Component {
     formdata.append('text', this.state.textfield);
     formdata.append('completed', false);
 
-    const todos = [
+    const todos = {
       ...this.state.todos
-    ];
-    todos.push(newTodo);
+    };
+
     console.log(todos);
-    console.log(newTodo);
-    console.log(API_HOST);
 
 
     fetch('https://todolist-91ab2.firebaseio.com/todos.json', {
@@ -84,22 +119,74 @@ class Index extends Component {
     })
      .then((res) => {
        if (res.ok) {
-         this.setState({ todos, textfield: '' });
          return res.json();
        }
-       throw new Error('Could not fetch cancellation reasons.');
+       throw new Error('Could not create a new todo.');
+     })
+     .then((data) => {
+       const todo = {
+         text: this.state.textfield,
+         complete: false
+       };
+       todos[data.name] = todo;
+       this.setState({ todos, textfield: '' });
      })
      .catch(error => console.log(error));
-
-    // fetch('https://todolist-91ab2.firebaseio.com/todos.json', {
-    //   method: 'GET',
-    //   credential: 'include'
-    // })
-    //  .then(res => console.log(res.json()))
-    //  .catch(error => console.log(error));
   }
 
+  handleUpdateTodoChecked = id => () => {
+    const todos = {
+      ...this.state.todos
+    };
+
+    todos[id].completed = !todos[id].completed;
+
+    const updatedTodo = {
+      completed: todos[id].completed
+    };
+
+    console.log(updatedTodo);
+
+    fetch(`https://todolist-91ab2.firebaseio.com/todos/${id}.json`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedTodo)
+
+    })
+     .then((res) => {
+       if (res.ok) {
+         return res.json();
+       }
+       throw new Error('Sorry, could not mark todo as completed.');
+     })
+     .then(() => this.setState({ todos }))
+     .catch(error => console.log(error));
+  }
+
+  handleDeleteTodo = (id) => {
+    const todos = {
+      ...this.state.todos
+    };
+
+    delete todos[id];
+
+    fetch(`https://todolist-91ab2.firebaseio.com/todos/${id}.json`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' }
+    })
+     .then((res) => {
+       if (res.ok) {
+         return res.json();
+       }
+       throw new Error('Could not delete todo.');
+     })
+     .then(() => this.setState({ todos }))
+     .catch(error => console.log(error));
+  }
+
+
   render() {
+    const todos = this.setupTodoRows();
     return (
       <IntlProvider locale="en">
         <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
@@ -110,7 +197,7 @@ class Index extends Component {
               handleChange={this.handleTextfieldChange}
               handleAdd={this.handleCreateNewTodo}
             />
-            <Table rows={this.state.todos} />
+            {todos}
           </div>
         </MuiThemeProvider>
       </IntlProvider>

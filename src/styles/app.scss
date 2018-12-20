@@ -1,0 +1,14 @@
+body {
+  font-family: sans-serif;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+
+  p {
+    text-align: left;
+  }
+
+}

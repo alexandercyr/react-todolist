@@ -6,7 +6,8 @@ const components = {
   index: Index
 };
 
-require('./main-app.css');
+require('./styles/app.scss');
+
 
 function mainApp() {
   const el = document.getElementById('app');

@@ -13,11 +13,16 @@ const WEBPACK_HOT_ENTRY = `webpack-hot-middleware/client?path=${config.webpack.d
 const JS_JSX = /\.(js|jsx)$/; // We allow both .js or .jsx extensions for JS code – choose what you like more.
 const BABEL = 'babel-loader'; // We use Babel to transpile ES6/JSX into ES5. See .babelrc file for additional rules.
 const CSS_LOADER = {
-  test: /\.css$/,
-  use: ['style-loader', 'css-loader'], // Loaders are processed last-to-first
+  test: /\.scss$|\.css$/,
+  use: [{
+    loader: 'style-loader' // creates style nodes from JS strings
+  }, {
+    loader: 'css-loader' // translates CSS into CommonJS
+  }, {
+    loader: 'sass-loader' // compiles Sass to CSS
+  }], // Loaders are processed last-to-first
   include: config.paths.source
 };
-
 
 const webpackConfig = {
   node: {
