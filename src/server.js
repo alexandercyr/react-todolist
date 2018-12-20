@@ -24,7 +24,7 @@ const server = Hapi.Server({
     encoding: 'base64json',
     clearInvalid: true, // remove invalid cookies
     strictHeader: false, // don't allow violations of RFC 6265
-    ignoreErrors: false,
+    ignoreErrors: true,
     path: '/'
   }
 });

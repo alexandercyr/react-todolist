@@ -33,6 +33,7 @@
     "babel-eslint": "7.2.3",
     "babel-loader": "6.4.1",
     "babel-plugin-react-transform": "2.0.2",
+    "babel-preset-env": "^1.6.0",
     "babel-preset-react": "6.24.1",
     "babel-preset-stage-1": "6.24.1",
     "babel-register": "6.24.1",
