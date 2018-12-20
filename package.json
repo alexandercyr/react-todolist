@@ -10,7 +10,7 @@
   "author": "Shrine Development <hello@shrinedev.com>",
   "main": "src/server.js",
   "engines": {
-    "node": "^8.6.0",
+    "node": "^8.11.1",
     "npm": "^5.3.0"
   },
   "scripts": {
