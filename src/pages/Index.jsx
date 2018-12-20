@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
+import Button from '@material-ui/core/Button';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 import TabBar from '../components/tabBar';
 import TextEntry from '../components/textEntry';
@@ -126,7 +128,7 @@ class Index extends Component {
      .then((data) => {
        const todo = {
          text: this.state.textfield,
-         complete: false
+         completed: false
        };
        todos[data.name] = todo;
        this.setState({ todos, textfield: '' });
@@ -184,13 +186,50 @@ class Index extends Component {
      .catch(error => console.log(error));
   }
 
+  handleDeleteAllCompleted = () => {
+    const todos = {
+      ...this.state.todos
+    };
+
+    const idArr = Object.keys(this.state.todos).filter(id => todos[id].completed === true);
+
+    for (let i = 0; i < idArr.length; i += 1) {
+      fetch(`https://todolist-91ab2.firebaseio.com/todos/${idArr[i]}.json`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' }
+      })
+       .then((res) => {
+         if (res.ok) {
+           return res.json();
+         }
+         throw new Error('Could not delete todo.');
+       })
+       .then(() => {
+         delete todos[idArr[i]];
+         this.setState({ todos });
+       })
+       .catch(error => console.log(error));
+    }
+  }
+
 
   render() {
     const todos = this.setupTodoRows();
     return (
       <IntlProvider locale="en">
         <MuiThemeProvider muiTheme={getMuiTheme(darkBaseTheme)}>
-          <div>
+          <div className="top-right-action">
+            <Button
+              variant="outlined"
+              size="small"
+              color="default"
+              onClick={this.handleDeleteAllCompleted}
+            >
+              Delete Completed
+              <DeleteIcon />
+            </Button>
+          </div>
+          <div className="content-container">
             <TabBar selected={this.state.activeTabIndex} handleChange={this.handleTabChange} />
             <TextEntry
               value={this.state.textfield}

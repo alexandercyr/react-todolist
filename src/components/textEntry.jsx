@@ -6,24 +6,26 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 const TextEntry = props => (
-  <div styleName="text-entry-container">
+  <div className="text-entry-container">
     <FormControl fullWidth>
       <TextField
+        id="new-todo"
         label="What to do..."
         className="text-field"
         value={props.value}
         onChange={props.handleChange('textfield')}
-        margin="normal"
+        margin="dense"
       />
-      <Button
-        variant="contained"
-        color="primary"
-        className="add-btn"
-        onClick={e => props.handleAdd(e.target.value)}
-      >
-          Add Todo
-        </Button>
     </FormControl>
+
+    <Button
+      variant="contained"
+      color="primary"
+      className="add-btn"
+      onClick={e => props.handleAdd(e.target.value)}
+    >
+          Add Todo
+    </Button>
 
   </div>
 );
