@@ -208,6 +208,11 @@ class Index extends Component {
     }
   }
 
+  getActiveCount = () => {
+    const activeTodoIds = Object.keys(this.state.todos).filter(id => todos[id].completed === false);
+    return activeTodoIds.length;
+  }
+
 
   render() {
     const todos = this.setupTodoRows();
@@ -226,7 +231,10 @@ class Index extends Component {
             </Button>
           </div>
           <div className="content-container">
-            <TabBar selected={this.state.activeTabIndex} handleChange={this.handleTabChange} />
+            <TabBar
+              selected={this.state.activeTabIndex}
+              handleChange={this.handleTabChange}
+              activeTodoCount={() => this.getActiveCount()}/>
             <TextEntry
               value={this.state.textfield}
               handleChange={this.handleTextfieldChange}
