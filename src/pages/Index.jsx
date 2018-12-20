@@ -49,7 +49,7 @@ class Index extends Component {
 
   setupTodoRows = () => {
     const { todos } = this.state;
-    console.log(todos);
+
     const todoArr = Object.keys(todos).map((id) => {
       const todo = todos[id];
       return {
@@ -77,6 +77,7 @@ class Index extends Component {
 
     return filteredTodos.map(todo => (
       <Row
+        key={todo.id}
         id={todo.id}
         title={todo.text}
         completed={todo.completed}
@@ -110,14 +111,10 @@ class Index extends Component {
       ...this.state.todos
     };
 
-    console.log(todos);
-
-
     fetch('https://todolist-91ab2.firebaseio.com/todos.json', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newTodo)
-
     })
      .then((res) => {
        if (res.ok) {
@@ -147,13 +144,10 @@ class Index extends Component {
       completed: todos[id].completed
     };
 
-    console.log(updatedTodo);
-
     fetch(`https://todolist-91ab2.firebaseio.com/todos/${id}.json`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedTodo)
-
     })
      .then((res) => {
        if (res.ok) {
