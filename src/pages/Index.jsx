@@ -102,35 +102,37 @@ class Index extends Component {
       text: this.state.textfield,
       completed: false
     };
+    console.log(newTodo);
+    if (newTodo.text !== '') {
+      const formdata = new FormData();
+      formdata.append('text', this.state.textfield);
+      formdata.append('completed', false);
 
-    const formdata = new FormData();
-    formdata.append('text', this.state.textfield);
-    formdata.append('completed', false);
+      const todos = {
+        ...this.state.todos
+      };
 
-    const todos = {
-      ...this.state.todos
-    };
-
-    fetch('https://todolist-91ab2.firebaseio.com/todos.json', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newTodo)
-    })
-     .then((res) => {
-       if (res.ok) {
-         return res.json();
-       }
-       throw new Error('Could not create a new todo.');
-     })
-     .then((data) => {
-       const todo = {
-         text: this.state.textfield,
-         completed: false
-       };
-       todos[data.name] = todo;
-       this.setState({ todos, textfield: '' });
-     })
-     .catch(error => console.log(error));
+      fetch('https://todolist-91ab2.firebaseio.com/todos.json', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newTodo)
+      })
+           .then((res) => {
+             if (res.ok) {
+               return res.json();
+             }
+             throw new Error('Could not create a new todo.');
+           })
+           .then((data) => {
+             const todo = {
+               text: this.state.textfield,
+               completed: false
+             };
+             todos[data.name] = todo;
+             this.setState({ todos, textfield: '' });
+           })
+           .catch(error => console.log(error));
+    }
   }
 
   handleUpdateTodoChecked = id => () => {
