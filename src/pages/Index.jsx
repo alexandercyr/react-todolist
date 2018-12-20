@@ -87,6 +87,13 @@ class Index extends Component {
     ));
   }
 
+  getActiveCount = () => {
+    const { todos } = this.state;
+
+    const activeTodoIds = Object.keys(todos).filter(id => todos[id].completed === false);
+    return activeTodoIds.length;
+  }
+
   handleTabChange = (event, value) => {
     this.setState({ activeTabIndex: value });
   }
@@ -208,7 +215,6 @@ class Index extends Component {
     }
   }
 
-
   render() {
     const todos = this.setupTodoRows();
     return (
@@ -226,7 +232,11 @@ class Index extends Component {
             </Button>
           </div>
           <div className="content-container">
-            <TabBar selected={this.state.activeTabIndex} handleChange={this.handleTabChange} />
+            <TabBar
+              selected={this.state.activeTabIndex}
+              handleChange={this.handleTabChange}
+              activeTodoCount={this.getActiveCount()}
+            />
             <TextEntry
               value={this.state.textfield}
               handleChange={this.handleTextfieldChange}
