@@ -17,13 +17,13 @@ const TabBar = props => (
     <Tab
       label={
         <Badge style={{ padding: '0 15px' }} color={props.activeTodoCount > 0 ? 'secondary' : 'default'} badgeContent={props.activeTodoCount}>
-                Active
-              </Badge>
+          Active
+        </Badge>
     }
     />
     <Tab label="Completed" />
   </Tabs>
-  );
+);
 
 
 TabBar.propTypes = {
@@ -32,4 +32,4 @@ TabBar.propTypes = {
   activeTodoCount: PropTypes.number.isRequired
 };
 
-module.exports = TabBar;
+export default TabBar;

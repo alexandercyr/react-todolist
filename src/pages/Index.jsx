@@ -237,6 +237,7 @@ class Index extends Component {
               handleChange={this.handleTabChange}
               activeTodoCount={this.getActiveCount()}
             />
+
             <TextEntry
               value={this.state.textfield}
               handleChange={this.handleTextfieldChange}
