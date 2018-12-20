@@ -4,6 +4,7 @@
 require('babel-register');
 require('dotenv').config();
 
+
 const config = require('./config/variables');
 const Hapi = require('hapi');
 const Inert = require('inert');
@@ -11,6 +12,7 @@ const Vision = require('vision');
 const HapiReactViews = require('hapi-react-views');
 const HapiRequireHttps = require('hapi-require-https');
 const routes = require('./routes');
+
 
 const server = Hapi.Server({
   host: config.server.host,

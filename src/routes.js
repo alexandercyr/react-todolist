@@ -5,6 +5,7 @@ const path = require('path');
 // const Wreck = require('wreck');
 // const btoa = require('btoa');
 // const Querystring = require('querystring');  // built-in module
+const Wreck = require('wreck');
 
 const config = require('./config/variables');
 
@@ -106,6 +107,28 @@ const routes = [
     config: {
       handler(request, h) {
         return h.response('signed out').unstate('user').unstate('redirPath');
+      }
+    }
+  },
+  {
+    method: 'POST',
+    path: '/api/v1/todo',
+    config: {
+      payload: {
+        maxBytes: 6291456,
+        output: 'stream',
+        parse: false,
+        allow: 'multipart/form-data'
+      },
+      handler: {
+       proxy: { //eslint-disable-line
+         mapUri: request => ({
+           uri: 'https://todolist-91ab2.firebaseio.com/todos.json'
+         }),
+         onResponse: (err, res, request, h) => new Promise((resolve) => {
+           resolve(Wreck.read(res, { json: true }));
+         }).then(data => h.response(data || {}).code(res.statusCode))
+       }
       }
     }
   }
