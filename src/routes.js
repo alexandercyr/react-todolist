@@ -35,103 +35,12 @@ const routes = [
       handler(request, h) {
         return h.view('app', {
           view: 'index',
-          props: {
-            user: request.state.user
-          }
+          props: {}
         });
-      }
-    }
-  },
-  {
-    method: 'GET',
-    path: '/profile',
-    handler(request, h) {
-      const user = request.state.user;
-      // const user = {
-      //   name: 'Malissa'
-      // };
-      if (user) {
-        return h.view('app', {
-          view: 'profile',
-          props: {
-            user
-          }
-        });
-      }
-      return h.redirect('/account/signin');
-    }
-  },
-  {
-    method: 'GET',
-    path: '/account/signin',
-    config: {
-      handler(request, h) {
-        const user = request.state.user;
-        if (user) {
-          return h.redirect('/account/signout');
-        }
-        return h.view('signin', {
-          view: 'signin',
-          props: {
-            user
-          }
-        });
-      }
-    }
-  },
-  {
-    method: 'GET',
-    path: '/account/authorize',
-    config: {
-      handler(request, h) {
-        return h.response('signed in').state('user', {
-          name: 'Malissa'
-        });
-      }
-    }
-  },
-  {
-    method: 'GET',
-    path: '/redirect',
-    config: {
-      handler(request, h) {
-        const rte = request.state.redirPath || '/';
-        h.unstate('redirPath');
-        return h.redirect(rte);
-      }
-    }
-  },
-  {
-    method: 'GET',
-    path: '/account/signout',
-    config: {
-      handler(request, h) {
-        return h.response('signed out').unstate('user').unstate('redirPath');
-      }
-    }
-  },
-  {
-    method: 'POST',
-    path: '/api/v1/todo',
-    config: {
-      payload: {
-        maxBytes: 6291456,
-        output: 'stream',
-        parse: false,
-        allow: 'multipart/form-data'
-      },
-      handler: {
-       proxy: { //eslint-disable-line
-         mapUri: request => ({
-           uri: 'https://todolist-91ab2.firebaseio.com/todos.json'
-         }),
-         onResponse: (err, res, request, h) => new Promise((resolve) => {
-           resolve(Wreck.read(res, { json: true }));
-         }).then(data => h.response(data || {}).code(res.statusCode))
-       }
       }
     }
   }
+
 ];
 
 // Serve white-listed files from the webRoot directory

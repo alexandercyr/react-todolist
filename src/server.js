@@ -29,10 +29,6 @@ const server = Hapi.Server({
   }
 });
 
-// cookies
-server.state('user');
-server.state('redirPath');
-
 const plugins = [
   Inert, // enables serving static files (file and directory handlers)
   Vision, // enables rendering views with custom engines (view handler)
